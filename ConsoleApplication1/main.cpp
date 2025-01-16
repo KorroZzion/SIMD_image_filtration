@@ -51,7 +51,7 @@ int main() {
     std::cout << "Результат сохранен в файл output_gaussian_blur_OPENCV.jpg" << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Применение фильтра Гаусса вручную: " << std::endl;
+    std::cout << "Применение фильтра Гаусса без использования библиотек OpenCV и SIMD: " << std::endl;
     measureTime(gaussianBlurManual, inputImage, outputImage, kernelSize, sigma);
     cv::imwrite("output_gaussian_blur_MANUAL.jpg", outputImage);
     std::cout << "Результат сохранен в файл output_gaussian_blur_MANUAL.jpg" << std::endl;
@@ -73,7 +73,7 @@ int main() {
     std::cout << "Результат сохранен в файл output_sharpen_OPENCV.jpg" << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Повышение резкости вручную: " << std::endl;
+    std::cout << "Повышение резкости без использования библиотек OpenCV и SIMD: " << std::endl;
     measureTime(sharpenManual, inputImage, outputImage);
     cv::imwrite("output_sharpen_MANUAL.jpg", outputImage);
     std::cout << "Результат сохранен в файл output_sharpen_MANUAL.jpg" << std::endl;
@@ -95,7 +95,7 @@ int main() {
     std::cout << "Результат сохранен в файл output_sobel_OPENCV.jpg" << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Применение оператора Собеля вручную: " << std::endl;
+    std::cout << "Применение оператора Собеля без использования библиотек OpenCV и SIMD: " << std::endl;
     measureTime(sobelFilterManual, inputImage, outputImage);
     cv::imwrite("output_sobel_MANUAL.jpg", outputImage);
     std::cout << "Результат сохранен в файл output_sobel_MANUAL.jpg" << std::endl;
@@ -124,7 +124,7 @@ int main() {
     std::cout << "Результат сохранен в файл output_canny_OPENCV.jpg" << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Применение оператора Канни вручную: " << std::endl;
+    std::cout << "Применение оператора Канни без использования библиотек OpenCV и SIMD: " << std::endl;
     measureTime(cannyEdgeDetectorManual, inputImage, outputImage, lowThreshold, highThreshold);
     cv::imwrite("output_canny_MANUAL.jpg", outputImage);
     std::cout << "Результат сохранен в файл output_canny_MANUAL.jpg" << std::endl;
@@ -150,7 +150,7 @@ int main() {
     std::cout << "Результат сохранен в файл output_median_OPENCV.jpg" << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Применение медианного фильтра вручную: " << std::endl;
+    std::cout << "Применение медианного фильтра без использования библиотек OpenCV и SIMD: " << std::endl;
     measureTime(medianFilterManual, inputImage, outputImage, kernelSize);
     cv::imwrite("output_median_MANUAL.jpg", outputImage);
     std::cout << "Результат сохранен в файл output_median_MANUAL.jpg" << std::endl;
@@ -176,7 +176,7 @@ int main() {
     std::cout << "Результат сохранен в файл output_brightness_OPENCV.jpg" << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Изменение яркости вручную: " << std::endl;
+    std::cout << "Изменение яркости без использования библиотек OpenCV и SIMD: " << std::endl;
     measureTime(adjustBrightnessManual, inputImage, outputImage, beta);
     cv::imwrite("output_brightness_MANUAL.jpg", outputImage);
     std::cout << "Результат сохранен в файл output_brightness_MANUAL.jpg" << std::endl;
@@ -202,7 +202,7 @@ int main() {
     std::cout << "Результат сохранен в файл output_saturation_OPENCV.jpg" << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Изменение насыщенности вручную: " << std::endl;
+    std::cout << "Изменение насыщенности без использования библиотек OpenCV и SIMD: " << std::endl;
     measureTime(adjustSaturationManual, inputImage, outputImage, saturationFactor);
     cv::imwrite("output_saturation_MANUAL.jpg", outputImage);
     std::cout << "Результат сохранен в файл output_saturation_MANUAL.jpg" << std::endl;
@@ -228,7 +228,7 @@ int main() {
     std::cout << "Результат сохранен в файл output_pixelate_OPENCV.jpg" << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Пикселизация вручную: " << std::endl;
+    std::cout << "Пикселизация без использования библиотек OpenCV и SIMD: " << std::endl;
     measureTime(pixelateManual, inputImage, outputImage, pixelSize);
     cv::imwrite("output_pixelate_MANUAL.jpg", outputImage);
     std::cout << "Результат сохранен в файл output_pixelate_MANUAL.jpg" << std::endl;
