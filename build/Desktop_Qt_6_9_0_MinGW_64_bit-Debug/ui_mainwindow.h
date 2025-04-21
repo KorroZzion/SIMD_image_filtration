@@ -361,8 +361,8 @@ public:
         labelCannyLow->setText(QCoreApplication::translate("MainWindow", "\320\235\320\270\320\266\320\275\320\270\320\271 \320\277\320\276\321\200\320\276\320\263:", nullptr));
         labelCannyHigh->setText(QCoreApplication::translate("MainWindow", "\320\222\320\265\321\200\321\205\320\275\320\270\320\271 \320\277\320\276\321\200\320\276\320\263:", nullptr));
         labelMedianKernel->setText(QCoreApplication::translate("MainWindow", "\320\240\320\260\320\267\320\274\320\265\321\200 \321\217\320\264\321\200\320\260:", nullptr));
-        labelBrightAlpha->setText(QCoreApplication::translate("MainWindow", "\320\244\320\260\320\272\321\202\320\276\321\200 \321\217\321\200\320\272\320\276\321\201\321\202\320\270:", nullptr));
-        labelContrastAlpha->setText(QCoreApplication::translate("MainWindow", "\320\244\320\260\320\272\321\202\320\276\321\200 \320\272\320\276\320\275\321\202\321\200\320\260\321\201\321\202\320\260:", nullptr));
+        labelBrightAlpha->setText(QCoreApplication::translate("MainWindow", "\320\232\320\276\321\215\321\204\321\204\320\270\321\206\320\270\320\265\320\275\321\202 \321\217\321\200\320\272\320\276\321\201\321\202\320\270:", nullptr));
+        labelContrastAlpha->setText(QCoreApplication::translate("MainWindow", "\320\232\320\276\321\215\321\204\321\204\320\270\321\206\320\270\320\265\320\275\321\202 \320\275\320\260\321\201\321\213\321\211\320\265\320\275\320\275\320\276\321\201\321\202\320\270", nullptr));
         labelPixelSize->setText(QCoreApplication::translate("MainWindow", "\320\240\320\260\320\267\320\274\320\265\321\200 \320\261\320\273\320\276\320\272\320\260:", nullptr));
         labelSharpenParams->setText(QCoreApplication::translate("MainWindow", "\320\237\320\260\321\200\320\260\320\274\320\265\321\202\321\200\321\213 \320\276\321\202\321\201\321\203\321\202\321\201\321\202\320\262\321\203\321\216\321\202", nullptr));
         applyButton->setText(QCoreApplication::translate("MainWindow", "\320\237\321\200\320\270\320\274\320\265\320\275\320\270\321\202\321\214", nullptr));

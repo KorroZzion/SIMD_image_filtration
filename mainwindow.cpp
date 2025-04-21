@@ -64,7 +64,7 @@ void MainWindow::on_loadButton_clicked()
             return;
         }
 
-        isVideo = false; // 👈 указываем, что это изображение
+        isVideo = false; // указываем, что это изображение
 
         cv::cvtColor(originalImage, originalImage, cv::COLOR_BGR2RGB);
         QImage qimg(originalImage.data, originalImage.cols, originalImage.rows, originalImage.step, QImage::Format_RGB888);

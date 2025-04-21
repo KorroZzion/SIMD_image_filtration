@@ -252,7 +252,7 @@
            <item row="0" column="0">
             <widget class="QLabel" name="labelBrightAlpha">
              <property name="text">
-              <string>Фактор яркости:</string>
+              <string>Коэффициент яркости:</string>
              </property>
             </widget>
            </item>
@@ -276,7 +276,7 @@
            <item row="0" column="0">
             <widget class="QLabel" name="labelContrastAlpha">
              <property name="text">
-              <string>Фактор контраста:</string>
+              <string>Коэффициент насыщенности</string>
              </property>
             </widget>
            </item>
