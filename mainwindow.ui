@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>869</width>
+    <height>541</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Обработка медиа</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QGroupBox" name="controlPanel">
+      <property name="title">
+       <string>Панель управления</string>
+      </property>
+      <layout class="QVBoxLayout" name="controlLayout">
+       <item>
+        <widget class="QPushButton" name="loadButton">
+         <property name="text">
+          <string>Загрузить</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="saveButton">
+         <property name="text">
+          <string>Сохранить</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="filterComboBox">
+         <property name="toolTip">
+          <string>Выберите фильтр</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Размытие по Гауссу</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Оператор Собеля</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Оператор Канни</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Медианный фильтр</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Изменение яркости</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Изменение насыщенности</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Пикселизация</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Изменение резкости</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="implementationComboBox">
+         <property name="toolTip">
+          <string>Выберите реализацию</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>OpenCV</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SIMD</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Без библиотек</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QStackedWidget" name="parametersStack">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="pageGaussian">
+          <layout class="QFormLayout" name="formLayoutGaussian">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelGaussKernel">
+             <property name="text">
+              <string>Размер ядра:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="gaussKernelSpin">
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>99</number>
+             </property>
+             <property name="singleStep">
+              <number>2</number>
+             </property>
+             <property name="value">
+              <number>5</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelGaussSigma">
+             <property name="text">
+              <string>Sigma:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QDoubleSpinBox" name="gaussSigmaSpin">
+             <property name="decimals">
+              <number>1</number>
+             </property>
+             <property name="minimum">
+              <double>0.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>100.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>1.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageSobel">
+          <layout class="QVBoxLayout" name="layoutSobel">
+           <item>
+            <widget class="QLabel" name="labelSobelParams">
+             <property name="text">
+              <string>Параметры отсутствуют</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageCanny">
+          <layout class="QFormLayout" name="formLayoutCanny">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelCannyLow">
+             <property name="text">
+              <string>Нижний порог:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="cannyLowSpin">
+             <property name="minimum">
+              <number>0</number>
+             </property>
+             <property name="maximum">
+              <number>255</number>
+             </property>
+             <property name="value">
+              <number>50</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelCannyHigh">
+             <property name="text">
+              <string>Верхний порог:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QSpinBox" name="cannyHighSpin">
+             <property name="minimum">
+              <number>0</number>
+             </property>
+             <property name="maximum">
+              <number>255</number>
+             </property>
+             <property name="value">
+              <number>150</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageMedian">
+          <layout class="QFormLayout" name="formLayoutMedian">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelMedianKernel">
+             <property name="text">
+              <string>Размер ядра:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="medianKernelSpin">
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>99</number>
+             </property>
+             <property name="singleStep">
+              <number>2</number>
+             </property>
+             <property name="value">
+              <number>3</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageBrightness">
+          <layout class="QFormLayout" name="formLayoutBright">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelBrightAlpha">
+             <property name="text">
+              <string>Фактор яркости:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="brightBetaSpin">
+             <property name="minimum">
+              <number>-100</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>0</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageContrast">
+          <layout class="QFormLayout" name="formLayoutContrast">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelContrastAlpha">
+             <property name="text">
+              <string>Фактор контраста:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QDoubleSpinBox" name="contrastAlphaSpin">
+             <property name="decimals">
+              <number>0</number>
+             </property>
+             <property name="minimum">
+              <double>0.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>100.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>1.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pagePixelate">
+          <layout class="QFormLayout" name="formLayoutPixelate">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelPixelSize">
+             <property name="text">
+              <string>Размер блока:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="pixelSizeSpin">
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>1000000000</number>
+             </property>
+             <property name="value">
+              <number>1</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageSharpen">
+          <layout class="QVBoxLayout" name="layoutSharpen">
+           <item>
+            <widget class="QLabel" name="labelSharpenParams">
+             <property name="text">
+              <string>Параметры отсутствуют</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="applyButton">
+         <property name="text">
+          <string>Применить</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="timeLabel">
+         <property name="text">
+          <string>Время обработки: 0.00 с</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="imageLabel">
+      <property name="minimumSize">
+       <size>
+        <width>640</width>
+        <height>480</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Shape::Box</enum>
+      </property>
+      <property name="text">
+       <string>Здесь будет отображаться результат</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>869</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
