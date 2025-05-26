@@ -20,9 +20,9 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -74,17 +74,23 @@ public:
     QWidget *pageSharpen;
     QVBoxLayout *layoutSharpen;
     QLabel *labelSharpenParams;
+    QLabel *label;
+    QSlider *comparisonSlider;
     QPushButton *applyButton;
     QLabel *timeLabel;
+    QVBoxLayout *verticalLayout;
     QLabel *imageLabel;
+    QHBoxLayout *horizontalLayout_3;
+    QPushButton *pauseButton;
+    QSlider *videoSlider;
+    QLabel *videoTimeLabel;
     QMenuBar *menubar;
-    QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(869, 541);
+        MainWindow->resize(964, 550);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
         horizontalLayout = new QHBoxLayout(centralwidget);
@@ -291,6 +297,19 @@ public:
 
         controlLayout->addWidget(parametersStack);
 
+        label = new QLabel(controlPanel);
+        label->setObjectName("label");
+
+        controlLayout->addWidget(label);
+
+        comparisonSlider = new QSlider(controlPanel);
+        comparisonSlider->setObjectName("comparisonSlider");
+        comparisonSlider->setMaximum(100);
+        comparisonSlider->setValue(50);
+        comparisonSlider->setOrientation(Qt::Orientation::Horizontal);
+
+        controlLayout->addWidget(comparisonSlider);
+
         applyButton = new QPushButton(controlPanel);
         applyButton->setObjectName("applyButton");
 
@@ -305,22 +324,45 @@ public:
 
         horizontalLayout->addWidget(controlPanel);
 
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName("verticalLayout");
         imageLabel = new QLabel(centralwidget);
         imageLabel->setObjectName("imageLabel");
         imageLabel->setMinimumSize(QSize(640, 480));
         imageLabel->setFrameShape(QFrame::Shape::Box);
         imageLabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
-        horizontalLayout->addWidget(imageLabel);
+        verticalLayout->addWidget(imageLabel);
+
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setObjectName("horizontalLayout_3");
+        pauseButton = new QPushButton(centralwidget);
+        pauseButton->setObjectName("pauseButton");
+
+        horizontalLayout_3->addWidget(pauseButton);
+
+        videoSlider = new QSlider(centralwidget);
+        videoSlider->setObjectName("videoSlider");
+        videoSlider->setOrientation(Qt::Orientation::Horizontal);
+
+        horizontalLayout_3->addWidget(videoSlider);
+
+        videoTimeLabel = new QLabel(centralwidget);
+        videoTimeLabel->setObjectName("videoTimeLabel");
+
+        horizontalLayout_3->addWidget(videoTimeLabel);
+
+
+        verticalLayout->addLayout(horizontalLayout_3);
+
+
+        horizontalLayout->addLayout(verticalLayout);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 869, 22));
+        menubar->setGeometry(QRect(0, 0, 964, 22));
         MainWindow->setMenuBar(menubar);
-        statusbar = new QStatusBar(MainWindow);
-        statusbar->setObjectName("statusbar");
-        MainWindow->setStatusBar(statusbar);
 
         retranslateUi(MainWindow);
 
@@ -365,9 +407,12 @@ public:
         labelContrastAlpha->setText(QCoreApplication::translate("MainWindow", "\320\232\320\276\321\215\321\204\321\204\320\270\321\206\320\270\320\265\320\275\321\202 \320\275\320\260\321\201\321\213\321\211\320\265\320\275\320\275\320\276\321\201\321\202\320\270", nullptr));
         labelPixelSize->setText(QCoreApplication::translate("MainWindow", "\320\240\320\260\320\267\320\274\320\265\321\200 \320\261\320\273\320\276\320\272\320\260:", nullptr));
         labelSharpenParams->setText(QCoreApplication::translate("MainWindow", "\320\237\320\260\321\200\320\260\320\274\320\265\321\202\321\200\321\213 \320\276\321\202\321\201\321\203\321\202\321\201\321\202\320\262\321\203\321\216\321\202", nullptr));
+        label->setText(QCoreApplication::translate("MainWindow", "\320\224\320\276 /  \320\277\320\276\321\201\320\273\320\265 \320\276\320\261\321\200\320\260\320\261\320\276\321\202\320\272\320\270", nullptr));
         applyButton->setText(QCoreApplication::translate("MainWindow", "\320\237\321\200\320\270\320\274\320\265\320\275\320\270\321\202\321\214", nullptr));
         timeLabel->setText(QCoreApplication::translate("MainWindow", "\320\222\321\200\320\265\320\274\321\217 \320\276\320\261\321\200\320\260\320\261\320\276\321\202\320\272\320\270: 0.00 \321\201", nullptr));
         imageLabel->setText(QCoreApplication::translate("MainWindow", "\320\227\320\264\320\265\321\201\321\214 \320\261\321\203\320\264\320\265\321\202 \320\276\321\202\320\276\320\261\321\200\320\260\320\266\320\260\321\202\321\214\321\201\321\217 \321\200\320\265\320\267\321\203\320\273\321\214\321\202\320\260\321\202", nullptr));
+        pauseButton->setText(QCoreApplication::translate("MainWindow", "\342\226\266", nullptr));
+        videoTimeLabel->setText(QCoreApplication::translate("MainWindow", "00:00 / 00:00", nullptr));
     } // retranslateUi
 
 };

@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <opencv2/opencv.hpp>
 #include <vector>
+#include <QPainter>
+
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,10 +24,13 @@ private slots:
     void on_saveButton_clicked();
     void on_applyButton_clicked();
     void on_filterComboBox_currentIndexChanged(int index);
-    void on_gaussianKernelSizeSpinBox_valueChanged(int value);
-    void on_medianKernelSizeSpinBox_valueChanged(int value);
-    void loadAndProcessVideo(QString filePath);
-    void playProcessedVideo();
+    void on_gaussianKernelSpinEditingFinished();
+    void on_medianKernelSpinEditingFinished();
+    void on_pixelSizeSpinEditingFinished();
+    void nextFrame();
+    void on_videoSlider_sliderPressed();
+    void on_pauseButton_clicked();
+
 
 private:
     Ui::MainWindow *ui;
@@ -35,7 +41,21 @@ private:
     std::vector<cv::Mat> processedFrames;
     std::vector<cv::Mat> processedVideoFrames;
 
-    void applySelectedFilter(); // 👈 функция, которую мы пропишем
+    std::vector<cv::Mat> originalVideoFrames;
+    QTimer *playTimer;
+    bool isPlaying = false;
+    int currentFrameIndex = 0;
+
+    void applySelectedFilter();
+    void showComparisonFrame(int frameIndex, int comparisonValue);
+
+    double videoFps = 30.0;
+    int videoFrameCount = 0;
+    QString formatTime(int totalSeconds) const;
+
+protected:
+    void paintEvent(QPaintEvent* event) override;
+
 };
 
 #endif // MAINWINDOW_H

@@ -7,6 +7,7 @@
 #include <QImage>
 #include <QPixmap>
 #include <chrono>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -15,38 +16,103 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     connect(ui->filterComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &MainWindow::on_filterComboBox_currentIndexChanged);
-    connect(ui->gaussKernelSpin, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, &MainWindow::on_gaussianKernelSizeSpinBox_valueChanged);
-    connect(ui->medianKernelSpin, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, &MainWindow::on_medianKernelSizeSpinBox_valueChanged);
+    connect(ui->gaussKernelSpin, &QSpinBox::editingFinished,
+            this, &MainWindow::on_gaussianKernelSpinEditingFinished);
+    connect(ui->medianKernelSpin, &QSpinBox::editingFinished,
+            this, &MainWindow::on_medianKernelSpinEditingFinished);
 
+    ui->pixelSizeSpin->setRange(1, 32768);
+    connect(ui->pixelSizeSpin, &QSpinBox::editingFinished,
+            this, &MainWindow::on_pixelSizeSpinEditingFinished);
+
+    playTimer = new QTimer(this);
+    connect(playTimer, &QTimer::timeout, this, &MainWindow::nextFrame);
+    connect(ui->videoSlider, &QSlider::sliderPressed,
+            this, &MainWindow::on_videoSlider_sliderPressed);
+    connect(ui->videoSlider, &QSlider::valueChanged, this, [this](int value){
+        currentFrameIndex = value;
+        showComparisonFrame(currentFrameIndex, ui->comparisonSlider->value());
+
+        int elapsedSec = static_cast<int>(currentFrameIndex / videoFps);
+        int totalSec   = static_cast<int>(videoFrameCount / videoFps);
+        ui->videoTimeLabel->setText(
+            formatTime(elapsedSec) + " / " + formatTime(totalSec)
+            );
+    });
+    connect(ui->comparisonSlider, &QSlider::valueChanged, this, [this](int){
+        showComparisonFrame(currentFrameIndex, ui->comparisonSlider->value());
+    });
 }
+
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-void MainWindow::on_gaussianKernelSizeSpinBox_valueChanged(int value)
+bool isPowerOfTwo(int x) {
+    return x > 0 && (x & (x - 1)) == 0;
+}
+
+int nearestLowerPowerOfTwo(int x) {
+    int power = 1;
+    while (power * 2 <= x) {
+        power *= 2;
+    }
+    return power;
+}
+
+void MainWindow::on_pixelSizeSpinEditingFinished()
 {
+    int value = ui->pixelSizeSpin->value();
+    if (!isPowerOfTwo(value)) {
+        int corrected = nearestLowerPowerOfTwo(value);
+        ui->pixelSizeSpin->setValue(corrected);
+    }
+}
+
+
+void MainWindow::on_gaussianKernelSpinEditingFinished()
+{
+    int value = ui->gaussKernelSpin->value();
     if (value % 2 == 0) {
         ui->gaussKernelSpin->setValue(value + 1);
     }
 }
 
-void MainWindow::on_medianKernelSizeSpinBox_valueChanged(int value)
+void MainWindow::on_medianKernelSpinEditingFinished()
 {
+    int value = ui->medianKernelSpin->value();
     if (value % 2 == 0) {
-        ui->medianKernelSpin->setValue(value +1);
+        ui->medianKernelSpin->setValue(value + 1);
     }
 }
 
-
 void MainWindow::on_filterComboBox_currentIndexChanged(int index)
 {
-    // Просто переключаем страницу в stackedWidget
     ui->parametersStack->setCurrentIndex(index);
 }
+
+
+void MainWindow::on_pauseButton_clicked()
+{
+    if (!isVideo) return;
+
+    if (isPlaying) {
+        playTimer->stop();
+        isPlaying = false;
+        qDebug() << "Pause";
+        ui->pauseButton->setText("▶");
+        return;
+    } else {
+        playTimer->start(30);
+        isPlaying = true;
+        qDebug() << "Play";
+        ui->pauseButton->setText("⏸");
+        return;
+    }
+}
+
 
 
 void MainWindow::on_loadButton_clicked()
@@ -71,48 +137,52 @@ void MainWindow::on_loadButton_clicked()
         ui->imageLabel->setPixmap(QPixmap::fromImage(qimg).scaled(ui->imageLabel->size(), Qt::KeepAspectRatio));
     }
     else if (extension == "mp4" || extension == "avi" || extension == "mov") {
-        currentVideoPath = filename; // сохранение пути к видео
-        loadAndProcessVideo(filename);
+        currentVideoPath = filename;
         isVideo = true;
+
+        // Читаем ВСЕ кадры в оригинал
+        originalVideoFrames.clear();
+        cv::VideoCapture cap(filename.toStdString());
+        videoFps = cap.get(cv::CAP_PROP_FPS);
+        videoFrameCount = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_COUNT));
+
+        if (!cap.isOpened()) {
+            QMessageBox::warning(this, "Ошибка", "Не удалось открыть видео.");
+            return;
+        }
+        cv::Mat frame;
+        while (cap.read(frame)) {
+            originalVideoFrames.push_back(frame.clone());
+        }
+        ui->videoSlider->setMinimum(0);
+        ui->videoSlider->setMaximum(videoFrameCount - 1);
+        ui->videoSlider->setValue(0);
+
+        // обновим сразу лейбл времени
+        int totalSec = static_cast<int>(videoFrameCount / videoFps);
+        ui->videoTimeLabel->setText(
+            formatTime(0) + " / " + formatTime(totalSec)
+            );
+
+        cap.release();
+
+        // До фильтрации processed = original
+        processedVideoFrames = originalVideoFrames;
+
+        // Настраиваем слайдер
+        int n = originalVideoFrames.size();
+        ui->videoSlider->setMinimum(0);
+        ui->videoSlider->setMaximum(n - 1);
+        ui->videoSlider->setValue(0);
+        currentFrameIndex = 0;
+
+        // Показываем первый кадр:
+        showComparisonFrame(0, ui->comparisonSlider->value());
     }
     else {
         QMessageBox::warning(this, "Ошибка", "Неподдерживаемый формат файла.");
     }
 }
-
-void MainWindow::loadAndProcessVideo(QString filePath)
-{
-    cv::VideoCapture cap(filePath.toStdString());
-    if (!cap.isOpened()) {
-        QMessageBox::warning(this, "Ошибка", "Не удалось открыть видео.");
-        return;
-    }
-
-    cv::Mat frame;
-    while (cap.read(frame)) {
-        if (frame.empty()) break;
-
-        cv::Mat filteredFrame;
-        originalImage = frame;  // чтобы фильтры могли работать с originalImage
-
-        applySelectedFilter();  // твоя уже готовая функция
-        filteredFrame = processedImage;
-
-        if (filteredFrame.channels() == 1) {
-            cv::cvtColor(filteredFrame, filteredFrame, cv::COLOR_GRAY2RGB);
-        } else {
-            cv::cvtColor(filteredFrame, filteredFrame, cv::COLOR_BGR2RGB);
-        }
-
-        QImage qimg(filteredFrame.data, filteredFrame.cols, filteredFrame.rows, static_cast<int>(filteredFrame.step), QImage::Format_RGB888);
-        ui->imageLabel->setPixmap(QPixmap::fromImage(qimg).scaled(ui->imageLabel->size(), Qt::KeepAspectRatio));
-        cv::waitKey(30); // задержка между кадрами (можно регулировать)
-        QCoreApplication::processEvents();  // позволяет обновить GUI
-    }
-
-    cap.release();
-}
-
 
 
 void MainWindow::on_saveButton_clicked()
@@ -169,30 +239,10 @@ void MainWindow::on_applyButton_clicked()
         double duration = std::chrono::duration<double>(end - start).count();
         ui->timeLabel->setText(QString("Время обработки: %1 с").arg(duration, 0, 'f', 6));
 
-        cv::Mat rgb;
-
-        QString selectedFilter = ui->filterComboBox->currentText();
-
-        if (selectedFilter == "Оператор Собеля" || selectedFilter == "Оператор Канни" || selectedFilter == "Медианный фильтр") {
-            cv::Mat normalized;
-            cv::normalize(processedImage, normalized, 0, 255, cv::NORM_MINMAX);
-            normalized.convertTo(normalized, CV_8U);
-            cv::cvtColor(normalized, rgb, cv::COLOR_GRAY2RGB);
-            QImage qimg(rgb.data, rgb.cols, rgb.rows, static_cast<int>(rgb.step), QImage::Format_RGB888);
-            ui->imageLabel->setPixmap(QPixmap::fromImage(qimg).scaled(ui->imageLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-        } else {
-            if (processedImage.channels() == 3) {
-                cv::cvtColor(processedImage, rgb, cv::COLOR_BGR2RGB);
-                QImage qimg(processedImage.data, processedImage.cols, processedImage.rows, processedImage.step, QImage::Format_RGB888);
-                ui->imageLabel->setPixmap(QPixmap::fromImage(qimg).scaled(ui->imageLabel->size(), Qt::KeepAspectRatio));
-            } else {
-                QMessageBox::warning(this, "Ошибка", "Неподдерживаемый формат изображения.");
-                return;
-            }
-        }
     } else {
-        // Логика для видео
-        processedVideoFrames.clear(); // очищаем старые кадры
+        // Очистить предыдущие кадры
+        originalVideoFrames.clear();
+        processedVideoFrames.clear();
 
         cv::VideoCapture cap(currentVideoPath.toStdString());
         if (!cap.isOpened()) {
@@ -201,45 +251,197 @@ void MainWindow::on_applyButton_clicked()
         }
 
         auto start = std::chrono::high_resolution_clock::now();
-
         cv::Mat frame;
         while (cap.read(frame)) {
             if (frame.empty()) break;
 
+            // сохраняем оригинал
+            originalVideoFrames.push_back(frame.clone());
+
+            // применяем фильтр
             originalImage = frame;
             applySelectedFilter();
-            processedVideoFrames.push_back(processedImage.clone()); // сохраняем обработанный кадр
+            processedVideoFrames.push_back(processedImage.clone());
         }
-
+        cap.release();
         auto end = std::chrono::high_resolution_clock::now();
         double duration = std::chrono::duration<double>(end - start).count();
         ui->timeLabel->setText(QString("Время обработки: %1 с").arg(duration, 0, 'f', 6));
 
-        cap.release();
+        // Настраиваем ползунок перемотки
+        int n = static_cast<int>(processedVideoFrames.size());
+        ui->videoSlider->setMinimum(0);
+        ui->videoSlider->setMaximum(n - 1);
+        ui->videoSlider->setValue(0);
+        currentFrameIndex = 0;
 
-        // Воспроизвести обработанное видео
-        playProcessedVideo();
+        // Показываем первый кадр
+        showComparisonFrame(0, ui->comparisonSlider->value());
+
+        // Запускаем воспроизведение
+        isPlaying = true;
+        playTimer->start(30); // ~30 мс между кадрами (примерно 33 fps)
+        ui->pauseButton->setText("⏸");
     }
 }
 
-void MainWindow::playProcessedVideo()
+void MainWindow::showComparisonFrame(int frameIndex, int comparisonValue)
 {
-    for (const auto& frame : processedVideoFrames) {
-        cv::Mat rgbFrame;
-        if (frame.channels() == 1) {
-            cv::cvtColor(frame, rgbFrame, cv::COLOR_GRAY2RGB);
+    if (frameIndex < 0 || frameIndex >= int(originalVideoFrames.size()))
+        return;
+
+    // Получаем оба кадра и конвертируем в RGB
+    cv::Mat orig = originalVideoFrames[frameIndex];
+    cv::Mat proc = processedVideoFrames[frameIndex];
+    cv::Mat origRGB, procRGB;
+    cv::cvtColor(orig,  origRGB, cv::COLOR_BGR2RGB);
+    cv::cvtColor(proc,  procRGB, cv::COLOR_BGR2RGB);
+
+    // Если ползунок в 0% — показываем целиком оригинал
+    if (comparisonValue <= 0) {
+        QImage img(procRGB.data, procRGB.cols, procRGB.rows,
+                   int(procRGB.step), QImage::Format_RGB888);
+        ui->imageLabel->setPixmap(QPixmap::fromImage(img)
+                                      .scaled(ui->imageLabel->size(),
+                                              Qt::KeepAspectRatio));
+        return;
+    }
+    // Если ползунок в 100% — показываем целиком обработанное
+    if (comparisonValue >= 100) {
+
+        QImage img(origRGB.data, origRGB.cols, origRGB.rows,
+                   int(origRGB.step), QImage::Format_RGB888);
+        ui->imageLabel->setPixmap(QPixmap::fromImage(img)
+                                      .scaled(ui->imageLabel->size(),
+                                              Qt::KeepAspectRatio));
+        return;
+    }
+
+    // Для остальных значений — нормальная «смешанная» отрисовка
+    int width  = origRGB.cols;
+    int height = origRGB.rows;
+    int splitX = width * comparisonValue / 100;
+
+    // Создаём пустую картинку
+    cv::Mat blended(height, width, CV_8UC3);
+
+    // Копируем левую часть из original
+    origRGB(cv::Rect(0, 0, splitX, height))
+        .copyTo(blended(cv::Rect(0, 0, splitX, height)));
+
+    // Копируем правую часть из processed
+    procRGB(cv::Rect(splitX, 0, width - splitX, height))
+        .copyTo(blended(cv::Rect(splitX, 0, width - splitX, height)));
+
+    // Отправляем в QLabel
+    QImage img(blended.data, blended.cols, blended.rows,
+               int(blended.step), QImage::Format_RGB888);
+    ui->imageLabel->setPixmap(QPixmap::fromImage(img)
+                                  .scaled(ui->imageLabel->size(),
+                                          Qt::KeepAspectRatio));
+}
+
+
+
+QString MainWindow::formatTime(int totalSeconds) const
+{
+    int h = totalSeconds / 3600;
+    int m = (totalSeconds % 3600) / 60;
+    int s = totalSeconds % 60;
+
+    if (h > 0)
+        return QString("%1:%2:%3")
+            .arg(h, 2, 10, QChar('0'))
+            .arg(m, 2, 10, QChar('0'))
+            .arg(s, 2, 10, QChar('0'));
+    else
+        return QString("%1:%2")
+            .arg(m, 2, 10, QChar('0'))
+            .arg(s, 2, 10, QChar('0'));
+}
+
+
+void MainWindow::nextFrame()
+{
+    if (!isVideo || processedVideoFrames.empty()) return;
+
+    currentFrameIndex++;
+    // сколько прошло
+    int elapsedSec = static_cast<int>(currentFrameIndex / videoFps);
+    // сколько всего
+    int totalSec = static_cast<int>(videoFrameCount / videoFps);
+
+    ui->videoTimeLabel->setText(
+        formatTime(elapsedSec) + " / " + formatTime(totalSec)
+        );
+
+    if (currentFrameIndex >= (int)processedVideoFrames.size()) {
+        currentFrameIndex = 0; // Зациклить
+    }
+
+    ui->videoSlider->blockSignals(true);
+    ui->videoSlider->setValue(currentFrameIndex);
+    ui->videoSlider->blockSignals(false);
+
+    showComparisonFrame(currentFrameIndex, ui->comparisonSlider->value());
+}
+
+
+void MainWindow::on_videoSlider_sliderPressed()
+{
+    if (isPlaying) {
+        playTimer->stop();
+        isPlaying = false;
+        ui->pauseButton->setText("▶");
+    }
+}
+
+void MainWindow::paintEvent(QPaintEvent* event)
+{
+    if (!isVideo)
+    {
+        QMainWindow::paintEvent(event);
+
+        if (originalImage.empty() || processedImage.empty()) return;
+
+        cv::Mat originalRGB, processedRGB;
+
+        if (originalImage.channels() == 1)
+            cv::cvtColor(originalImage, originalRGB, cv::COLOR_GRAY2RGB);
+        else
+            originalRGB = originalImage.clone();
+
+        if (processedImage.channels() == 1) {
+            cv::Mat normalized;
+            cv::normalize(processedImage, normalized, 0, 255, cv::NORM_MINMAX);
+            normalized.convertTo(normalized, CV_8U);
+            cv::cvtColor(normalized, processedRGB, cv::COLOR_GRAY2RGB);
         } else {
-            cv::cvtColor(frame, rgbFrame, cv::COLOR_BGR2RGB);
+            processedRGB = processedImage.clone();
         }
 
-        QImage qimg(rgbFrame.data, rgbFrame.cols, rgbFrame.rows, static_cast<int>(rgbFrame.step), QImage::Format_RGB888);
-        ui->imageLabel->setPixmap(QPixmap::fromImage(qimg).scaled(ui->imageLabel->size(), Qt::KeepAspectRatio));
+        QPixmap before = QPixmap::fromImage(QImage(originalRGB.data, originalRGB.cols, originalRGB.rows,
+                                                   static_cast<int>(originalRGB.step), QImage::Format_RGB888).copy());
+        QPixmap after = QPixmap::fromImage(QImage(processedRGB.data, processedRGB.cols, processedRGB.rows,
+                                                  static_cast<int>(processedRGB.step), QImage::Format_RGB888).copy());
 
-        QCoreApplication::processEvents();
-        QThread::msleep(30); // задержка для имитации видео
+        before = before.scaled(ui->imageLabel->size(), Qt::KeepAspectRatio);
+        after = after.scaled(ui->imageLabel->size(), Qt::KeepAspectRatio);
+
+        int sliderValue = ui->comparisonSlider->value();
+        int splitPos = before.width() * sliderValue / 100;
+
+        QPixmap composed(before.size());
+        composed.fill(Qt::transparent);
+        QPainter painter(&composed);
+        painter.drawPixmap(0, 0, before.copy(0, 0, splitPos, before.height()));
+        painter.drawPixmap(splitPos, 0, after.copy(splitPos, 0, after.width() - splitPos, after.height()));
+
+        painter.end();
+
+        ui->imageLabel->setPixmap(composed);
     }
 }
-
 
 
 void MainWindow::applySelectedFilter()

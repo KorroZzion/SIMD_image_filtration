@@ -45,12 +45,12 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "on_applyButton_clicked",
         "on_filterComboBox_currentIndexChanged",
         "index",
-        "on_gaussianKernelSizeSpinBox_valueChanged",
-        "value",
-        "on_medianKernelSizeSpinBox_valueChanged",
-        "loadAndProcessVideo",
-        "filePath",
-        "playProcessedVideo"
+        "on_gaussianKernelSpinEditingFinished",
+        "on_medianKernelSpinEditingFinished",
+        "on_pixelSizeSpinEditingFinished",
+        "nextFrame",
+        "on_videoSlider_sliderPressed",
+        "on_pauseButton_clicked"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -64,19 +64,17 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         QtMocHelpers::SlotData<void(int)>(5, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { QMetaType::Int, 6 },
         }}),
-        // Slot 'on_gaussianKernelSizeSpinBox_valueChanged'
-        QtMocHelpers::SlotData<void(int)>(7, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 8 },
-        }}),
-        // Slot 'on_medianKernelSizeSpinBox_valueChanged'
-        QtMocHelpers::SlotData<void(int)>(9, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 8 },
-        }}),
-        // Slot 'loadAndProcessVideo'
-        QtMocHelpers::SlotData<void(QString)>(10, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 11 },
-        }}),
-        // Slot 'playProcessedVideo'
+        // Slot 'on_gaussianKernelSpinEditingFinished'
+        QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_medianKernelSpinEditingFinished'
+        QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_pixelSizeSpinEditingFinished'
+        QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'nextFrame'
+        QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_videoSlider_sliderPressed'
+        QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_pauseButton_clicked'
         QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
@@ -105,10 +103,12 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 1: _t->on_saveButton_clicked(); break;
         case 2: _t->on_applyButton_clicked(); break;
         case 3: _t->on_filterComboBox_currentIndexChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 4: _t->on_gaussianKernelSizeSpinBox_valueChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 5: _t->on_medianKernelSizeSpinBox_valueChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 6: _t->loadAndProcessVideo((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 7: _t->playProcessedVideo(); break;
+        case 4: _t->on_gaussianKernelSpinEditingFinished(); break;
+        case 5: _t->on_medianKernelSpinEditingFinished(); break;
+        case 6: _t->on_pixelSizeSpinEditingFinished(); break;
+        case 7: _t->nextFrame(); break;
+        case 8: _t->on_videoSlider_sliderPressed(); break;
+        case 9: _t->on_pauseButton_clicked(); break;
         default: ;
         }
     }
@@ -133,14 +133,14 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 10)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 10;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 8)
+        if (_id < 10)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 8;
+        _id -= 10;
     }
     return _id;
 }
