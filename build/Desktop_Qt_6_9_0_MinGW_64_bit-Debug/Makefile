@@ -431,7 +431,8 @@ Makefile: ../../SIMD_filtration.pro D:/Programs/Qt/6.9.0/mingw_64/mkspecs/win32-
 		D:/Programs/Qt/6.9.0/mingw_64/lib/Qt6Gui.prl \
 		D:/Programs/Qt/6.9.0/mingw_64/lib/Qt6Core.prl \
 		D:/Programs/Qt/6.9.0/mingw_64/lib/Qt6EntryPoint.prl \
-		D:/Programs/Qt/6.9.0/mingw_64/mkspecs/features/build_pass.prf
+		D:/Programs/Qt/6.9.0/mingw_64/mkspecs/features/build_pass.prf \
+		../../resources.qrc
 	$(QMAKE) -o Makefile ..\..\SIMD_filtration.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
 D:/Programs/Qt/6.9.0/mingw_64/mkspecs/features/spec_pre.prf:
 D:/Programs/Qt/6.9.0/mingw_64/mkspecs/features/device_config.prf:
@@ -795,6 +796,7 @@ D:/Programs/Qt/6.9.0/mingw_64/lib/Qt6Gui.prl:
 D:/Programs/Qt/6.9.0/mingw_64/lib/Qt6Core.prl:
 D:/Programs/Qt/6.9.0/mingw_64/lib/Qt6EntryPoint.prl:
 D:/Programs/Qt/6.9.0/mingw_64/mkspecs/features/build_pass.prf:
+../../resources.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ..\..\SIMD_filtration.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
 

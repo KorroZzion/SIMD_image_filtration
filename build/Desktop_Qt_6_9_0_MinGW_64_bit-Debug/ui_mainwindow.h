@@ -90,7 +90,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(964, 550);
+        MainWindow->resize(964, 554);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
         horizontalLayout = new QHBoxLayout(centralwidget);
@@ -376,7 +376,7 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "\320\236\320\261\321\200\320\260\320\261\320\276\321\202\320\272\320\260 \320\274\320\265\320\264\320\270\320\260", nullptr));
         controlPanel->setTitle(QCoreApplication::translate("MainWindow", "\320\237\320\260\320\275\320\265\320\273\321\214 \321\203\320\277\321\200\320\260\320\262\320\273\320\265\320\275\320\270\321\217", nullptr));
-        loadButton->setText(QCoreApplication::translate("MainWindow", "\320\227\320\260\320\263\321\200\321\203\320\267\320\270\321\202\321\214", nullptr));
+        loadButton->setText(QCoreApplication::translate("MainWindow", "\320\236\321\202\320\272\321\200\321\213\321\202\321\214", nullptr));
         saveButton->setText(QCoreApplication::translate("MainWindow", "\320\241\320\276\321\205\321\200\320\260\320\275\320\270\321\202\321\214", nullptr));
         filterComboBox->setItemText(0, QCoreApplication::translate("MainWindow", "\320\240\320\260\320\267\320\274\321\213\321\202\320\270\320\265 \320\277\320\276 \320\223\320\260\321\203\321\201\321\201\321\203", nullptr));
         filterComboBox->setItemText(1, QCoreApplication::translate("MainWindow", "\320\236\320\277\320\265\321\200\320\260\321\202\320\276\321\200 \320\241\320\276\320\261\320\265\320\273\321\217", nullptr));
@@ -398,7 +398,7 @@ public:
         implementationComboBox->setToolTip(QCoreApplication::translate("MainWindow", "\320\222\321\213\320\261\320\265\321\200\320\270\321\202\320\265 \321\200\320\265\320\260\320\273\320\270\320\267\320\260\321\206\320\270\321\216", nullptr));
 #endif // QT_CONFIG(tooltip)
         labelGaussKernel->setText(QCoreApplication::translate("MainWindow", "\320\240\320\260\320\267\320\274\320\265\321\200 \321\217\320\264\321\200\320\260:", nullptr));
-        labelGaussSigma->setText(QCoreApplication::translate("MainWindow", "Sigma:", nullptr));
+        labelGaussSigma->setText(QCoreApplication::translate("MainWindow", "\320\241\321\202\320\260\320\275\320\264\320\260\321\200\321\202\320\275\320\276\320\265 \320\276\321\202\320\272\320\273\320\276\320\275\320\265\320\275\320\270\320\265", nullptr));
         labelSobelParams->setText(QCoreApplication::translate("MainWindow", "\320\237\320\260\321\200\320\260\320\274\320\265\321\202\321\200\321\213 \320\276\321\202\321\201\321\203\321\202\321\201\321\202\320\262\321\203\321\216\321\202", nullptr));
         labelCannyLow->setText(QCoreApplication::translate("MainWindow", "\320\235\320\270\320\266\320\275\320\270\320\271 \320\277\320\276\321\200\320\276\320\263:", nullptr));
         labelCannyHigh->setText(QCoreApplication::translate("MainWindow", "\320\222\320\265\321\200\321\205\320\275\320\270\320\271 \320\277\320\276\321\200\320\276\320\263:", nullptr));
