@@ -15,20 +15,28 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     connect(ui->filterComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &MainWindow::on_filterComboBox_currentIndexChanged);
+            this, &::MainWindow::filterComboIndexChanged);
     connect(ui->gaussKernelSpin, &QSpinBox::editingFinished,
-            this, &MainWindow::on_gaussianKernelSpinEditingFinished);
+            this, &::MainWindow::gaussianKernelSpinEditingFinished);
     connect(ui->medianKernelSpin, &QSpinBox::editingFinished,
-            this, &MainWindow::on_medianKernelSpinEditingFinished);
+            this, &::MainWindow::medianKernelSpinEditingFinished);
+
+    connect(ui->loadButton,    &QPushButton::clicked,               this, &MainWindow::loadButtonClicked);
+    connect(ui->saveButton,    &QPushButton::clicked,               this, &MainWindow::saveButtonClicked);
+    connect(ui->applyButton,   &QPushButton::clicked,               this, &MainWindow::applyButtonClicked);
+    connect(ui->filterComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &MainWindow::filterComboIndexChanged);
+    connect(ui->videoSlider,   &QSlider::sliderPressed,             this, &MainWindow::videoSliderPressed);
+    connect(ui->pauseButton,   &QPushButton::clicked,               this, &MainWindow::pauseButtonClicked);
 
     ui->pixelSizeSpin->setRange(1, 32768);
     connect(ui->pixelSizeSpin, &QSpinBox::editingFinished,
-            this, &MainWindow::on_pixelSizeSpinEditingFinished);
+            this, &::MainWindow::pixelSizeSpinEditingFinished);
 
     playTimer = new QTimer(this);
     connect(playTimer, &QTimer::timeout, this, &MainWindow::nextFrame);
     connect(ui->videoSlider, &QSlider::sliderPressed,
-            this, &MainWindow::on_videoSlider_sliderPressed);
+            this, &::MainWindow::videoSliderPressed);
     connect(ui->videoSlider, &QSlider::valueChanged, this, [this](int value){
         currentFrameIndex = value;
         showComparisonFrame(currentFrameIndex, ui->comparisonSlider->value());
@@ -65,7 +73,7 @@ int nearestLowerPowerOfTwo(int x) {
     return power;
 }
 
-void MainWindow::on_pixelSizeSpinEditingFinished()
+void MainWindow::pixelSizeSpinEditingFinished()
 {
     int value = ui->pixelSizeSpin->value();
     if (!isPowerOfTwo(value)) {
@@ -75,7 +83,7 @@ void MainWindow::on_pixelSizeSpinEditingFinished()
 }
 
 
-void MainWindow::on_gaussianKernelSpinEditingFinished()
+void MainWindow::gaussianKernelSpinEditingFinished()
 {
     int value = ui->gaussKernelSpin->value();
     if (value % 2 == 0) {
@@ -83,7 +91,7 @@ void MainWindow::on_gaussianKernelSpinEditingFinished()
     }
 }
 
-void MainWindow::on_medianKernelSpinEditingFinished()
+void MainWindow::medianKernelSpinEditingFinished()
 {
     int value = ui->medianKernelSpin->value();
     if (value % 2 == 0) {
@@ -91,13 +99,13 @@ void MainWindow::on_medianKernelSpinEditingFinished()
     }
 }
 
-void MainWindow::on_filterComboBox_currentIndexChanged(int index)
+void MainWindow::filterComboIndexChanged(int index)
 {
     ui->parametersStack->setCurrentIndex(index);
 }
 
 
-void MainWindow::on_pauseButton_clicked()
+void MainWindow::pauseButtonClicked()
 {
     if (!isVideo) return;
 
@@ -116,7 +124,7 @@ void MainWindow::on_pauseButton_clicked()
 
 
 
-void MainWindow::on_loadButton_clicked()
+void MainWindow::loadButtonClicked()
 {
     QString filename = QFileDialog::getOpenFileName(this, "Открыть изображение или видео", "",
                                                     "Изображения и видео (*.png *.jpg *.bmp *.mp4 *.avi *.mov)");
@@ -166,7 +174,6 @@ void MainWindow::on_loadButton_clicked()
         ui->videoSlider->setMaximum(videoFrameCount - 1);
         ui->videoSlider->setValue(0);
 
-        // обновим сразу лейбл времени
         int totalSec = static_cast<int>(videoFrameCount / videoFps);
         ui->videoTimeLabel->setText(
             formatTime(0) + " / " + formatTime(totalSec)
@@ -193,7 +200,7 @@ void MainWindow::on_loadButton_clicked()
 }
 
 
-void MainWindow::on_saveButton_clicked()
+void MainWindow::saveButtonClicked()
 {
     if (!isVideo) {
         if (processedImage.empty()) {
@@ -221,9 +228,7 @@ void MainWindow::on_saveButton_clicked()
         cv::VideoWriter writer(filename.toStdString(), cv::VideoWriter::fourcc('M','J','P','G'), fps, frameSize);
 
         for (const auto& frame : processedVideoFrames) {
-            cv::Mat bgrFrame;
-            cv::cvtColor(frame, bgrFrame, cv::COLOR_RGB2BGR);
-            writer.write(bgrFrame);
+            writer.write(frame);
         }
 
         writer.release();
@@ -231,10 +236,12 @@ void MainWindow::on_saveButton_clicked()
 }
 
 
-void MainWindow::on_applyButton_clicked()
+void MainWindow::applyButtonClicked()
 {
     if (!isVideo) {
         // Стандартная логика для изображения
+        originalVideoFrames.clear();
+        processedVideoFrames.clear();
         if (originalImage.empty()) {
             QMessageBox::warning(this, "Ошибка", "Сначала загрузите изображение.");
             return;
@@ -395,7 +402,7 @@ void MainWindow::nextFrame()
 }
 
 
-void MainWindow::on_videoSlider_sliderPressed()
+void MainWindow::videoSliderPressed()
 {
     if (isPlaying) {
         playTimer->stop();

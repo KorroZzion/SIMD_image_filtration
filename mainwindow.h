@@ -20,16 +20,16 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_loadButton_clicked();
-    void on_saveButton_clicked();
-    void on_applyButton_clicked();
-    void on_filterComboBox_currentIndexChanged(int index);
-    void on_gaussianKernelSpinEditingFinished();
-    void on_medianKernelSpinEditingFinished();
-    void on_pixelSizeSpinEditingFinished();
+    void loadButtonClicked();
+    void saveButtonClicked();
+    void applyButtonClicked();
+    void filterComboIndexChanged(int index);
+    void videoSliderPressed();
+    void pauseButtonClicked();
+    void gaussianKernelSpinEditingFinished();
+    void medianKernelSpinEditingFinished();
+    void pixelSizeSpinEditingFinished();
     void nextFrame();
-    void on_videoSlider_sliderPressed();
-    void on_pauseButton_clicked();
 
 
 private:

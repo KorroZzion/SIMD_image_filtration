@@ -39,42 +39,42 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
     namespace QMC = QtMocConstants;
     QtMocHelpers::StringRefStorage qt_stringData {
         "MainWindow",
-        "on_loadButton_clicked",
+        "loadButtonClicked",
         "",
-        "on_saveButton_clicked",
-        "on_applyButton_clicked",
-        "on_filterComboBox_currentIndexChanged",
+        "saveButtonClicked",
+        "applyButtonClicked",
+        "filterComboIndexChanged",
         "index",
-        "on_gaussianKernelSpinEditingFinished",
-        "on_medianKernelSpinEditingFinished",
-        "on_pixelSizeSpinEditingFinished",
-        "nextFrame",
-        "on_videoSlider_sliderPressed",
-        "on_pauseButton_clicked"
+        "videoSliderPressed",
+        "pauseButtonClicked",
+        "gaussianKernelSpinEditingFinished",
+        "medianKernelSpinEditingFinished",
+        "pixelSizeSpinEditingFinished",
+        "nextFrame"
     };
 
     QtMocHelpers::UintData qt_methods {
-        // Slot 'on_loadButton_clicked'
+        // Slot 'loadButtonClicked'
         QtMocHelpers::SlotData<void()>(1, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_saveButton_clicked'
+        // Slot 'saveButtonClicked'
         QtMocHelpers::SlotData<void()>(3, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_applyButton_clicked'
+        // Slot 'applyButtonClicked'
         QtMocHelpers::SlotData<void()>(4, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_filterComboBox_currentIndexChanged'
+        // Slot 'filterComboIndexChanged'
         QtMocHelpers::SlotData<void(int)>(5, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { QMetaType::Int, 6 },
         }}),
-        // Slot 'on_gaussianKernelSpinEditingFinished'
+        // Slot 'videoSliderPressed'
         QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_medianKernelSpinEditingFinished'
+        // Slot 'pauseButtonClicked'
         QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_pixelSizeSpinEditingFinished'
+        // Slot 'gaussianKernelSpinEditingFinished'
         QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'nextFrame'
+        // Slot 'medianKernelSpinEditingFinished'
         QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_videoSlider_sliderPressed'
+        // Slot 'pixelSizeSpinEditingFinished'
         QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_pauseButton_clicked'
+        // Slot 'nextFrame'
         QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
@@ -99,16 +99,16 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     auto *_t = static_cast<MainWindow *>(_o);
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: _t->on_loadButton_clicked(); break;
-        case 1: _t->on_saveButton_clicked(); break;
-        case 2: _t->on_applyButton_clicked(); break;
-        case 3: _t->on_filterComboBox_currentIndexChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 4: _t->on_gaussianKernelSpinEditingFinished(); break;
-        case 5: _t->on_medianKernelSpinEditingFinished(); break;
-        case 6: _t->on_pixelSizeSpinEditingFinished(); break;
-        case 7: _t->nextFrame(); break;
-        case 8: _t->on_videoSlider_sliderPressed(); break;
-        case 9: _t->on_pauseButton_clicked(); break;
+        case 0: _t->loadButtonClicked(); break;
+        case 1: _t->saveButtonClicked(); break;
+        case 2: _t->applyButtonClicked(); break;
+        case 3: _t->filterComboIndexChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 4: _t->videoSliderPressed(); break;
+        case 5: _t->pauseButtonClicked(); break;
+        case 6: _t->gaussianKernelSpinEditingFinished(); break;
+        case 7: _t->medianKernelSpinEditingFinished(); break;
+        case 8: _t->pixelSizeSpinEditingFinished(); break;
+        case 9: _t->nextFrame(); break;
         default: ;
         }
     }
