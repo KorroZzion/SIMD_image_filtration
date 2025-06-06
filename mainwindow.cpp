@@ -42,6 +42,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->comparisonSlider, &QSlider::valueChanged, this, [this](int){
         showComparisonFrame(currentFrameIndex, ui->comparisonSlider->value());
     });
+    ui->pauseButton->setVisible(false);
+    ui->videoSlider->setVisible(false);
+    ui->videoTimeLabel->setVisible(false);
 }
 
 
@@ -101,13 +104,11 @@ void MainWindow::on_pauseButton_clicked()
     if (isPlaying) {
         playTimer->stop();
         isPlaying = false;
-        qDebug() << "Pause";
         ui->pauseButton->setText("▶");
         return;
     } else {
         playTimer->start(30);
         isPlaying = true;
-        qDebug() << "Play";
         ui->pauseButton->setText("⏸");
         return;
     }
@@ -132,6 +133,10 @@ void MainWindow::on_loadButton_clicked()
 
         isVideo = false; // указываем, что это изображение
 
+        ui->pauseButton->setVisible(false);
+        ui->videoSlider->setVisible(false);
+        ui->videoTimeLabel->setVisible(false);
+
         cv::cvtColor(originalImage, originalImage, cv::COLOR_BGR2RGB);
         QImage qimg(originalImage.data, originalImage.cols, originalImage.rows, originalImage.step, QImage::Format_RGB888);
         ui->imageLabel->setPixmap(QPixmap::fromImage(qimg).scaled(ui->imageLabel->size(), Qt::KeepAspectRatio));
@@ -139,6 +144,9 @@ void MainWindow::on_loadButton_clicked()
     else if (extension == "mp4" || extension == "avi" || extension == "mov") {
         currentVideoPath = filename;
         isVideo = true;
+        ui->pauseButton->setVisible(true);
+        ui->videoSlider->setVisible(true);
+        ui->videoTimeLabel->setVisible(true);
 
         // Читаем ВСЕ кадры в оригинал
         originalVideoFrames.clear();
@@ -454,7 +462,7 @@ void MainWindow::applySelectedFilter()
         double sigma = ui->gaussSigmaSpin->value();
 
         if (impl == "OpenCV")
-            gaussianBlurCPU(originalImage, processedImage, k, sigma);
+            gaussianBlurOpenCV(originalImage, processedImage, k, sigma);
         else if (impl == "Без библиотек")
             gaussianBlurManual(originalImage, processedImage, k, sigma);
         else if (impl == "SIMD")
