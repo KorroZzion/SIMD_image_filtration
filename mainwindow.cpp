@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include "cpu_filters.h"
 #include <QFileDialog>
-#include <QThread>
 #include <QMessageBox>
 #include <QImage>
 #include <QPixmap>
@@ -14,29 +13,23 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->filterComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &::MainWindow::filterComboIndexChanged);
-    connect(ui->gaussKernelSpin, &QSpinBox::editingFinished,
-            this, &::MainWindow::gaussianKernelSpinEditingFinished);
-    connect(ui->medianKernelSpin, &QSpinBox::editingFinished,
-            this, &::MainWindow::medianKernelSpinEditingFinished);
+    connect(ui->filterComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &::MainWindow::filterComboIndexChanged);
+    connect(ui->gaussKernelSpin, &QSpinBox::editingFinished, this, &::MainWindow::gaussianKernelSpinEditingFinished);
+    connect(ui->medianKernelSpin, &QSpinBox::editingFinished, this, &::MainWindow::medianKernelSpinEditingFinished);
 
-    connect(ui->loadButton,    &QPushButton::clicked,               this, &MainWindow::loadButtonClicked);
-    connect(ui->saveButton,    &QPushButton::clicked,               this, &MainWindow::saveButtonClicked);
-    connect(ui->applyButton,   &QPushButton::clicked,               this, &MainWindow::applyButtonClicked);
-    connect(ui->filterComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &MainWindow::filterComboIndexChanged);
-    connect(ui->videoSlider,   &QSlider::sliderPressed,             this, &MainWindow::videoSliderPressed);
-    connect(ui->pauseButton,   &QPushButton::clicked,               this, &MainWindow::pauseButtonClicked);
+    connect(ui->loadButton, &QPushButton::clicked, this, &MainWindow::loadButtonClicked);
+    connect(ui->saveButton, &QPushButton::clicked, this, &MainWindow::saveButtonClicked);
+    connect(ui->applyButton, &QPushButton::clicked, this, &MainWindow::applyButtonClicked);
+    connect(ui->filterComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::filterComboIndexChanged);
+    connect(ui->videoSlider, &QSlider::sliderPressed, this, &MainWindow::videoSliderPressed);
+    connect(ui->pauseButton, &QPushButton::clicked, this, &MainWindow::pauseButtonClicked);
 
     ui->pixelSizeSpin->setRange(1, 32768);
-    connect(ui->pixelSizeSpin, &QSpinBox::editingFinished,
-            this, &::MainWindow::pixelSizeSpinEditingFinished);
+    connect(ui->pixelSizeSpin, &QSpinBox::editingFinished, this, &::MainWindow::pixelSizeSpinEditingFinished);
 
     playTimer = new QTimer(this);
     connect(playTimer, &QTimer::timeout, this, &MainWindow::nextFrame);
-    connect(ui->videoSlider, &QSlider::sliderPressed,
-            this, &::MainWindow::videoSliderPressed);
+    connect(ui->videoSlider, &QSlider::sliderPressed, this, &::MainWindow::videoSliderPressed);
     connect(ui->videoSlider, &QSlider::valueChanged, this, [this](int value){
         currentFrameIndex = value;
         showComparisonFrame(currentFrameIndex, ui->comparisonSlider->value());
@@ -47,9 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
             formatTime(elapsedSec) + " / " + formatTime(totalSec)
             );
     });
-    connect(ui->comparisonSlider, &QSlider::valueChanged, this, [this](int){
-        showComparisonFrame(currentFrameIndex, ui->comparisonSlider->value());
-    });
+    connect(ui->comparisonSlider, &QSlider::valueChanged, this, [this](int){ showComparisonFrame(currentFrameIndex, ui->comparisonSlider->value()); });
     ui->pauseButton->setVisible(false);
     ui->videoSlider->setVisible(false);
     ui->videoTimeLabel->setVisible(false);

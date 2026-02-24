@@ -34,5 +34,6 @@ void pixelateManual(const cv::Mat& input, cv::Mat& output, int pixelSize);
 void sharpenOpenCV(const cv::Mat& input, cv::Mat& output);
 void sharpenSIMD(const cv::Mat& input, cv::Mat& output);
 void sharpenManual(const cv::Mat& input, cv::Mat& output);
+void sharpenSIMD_Gray(const cv::Mat& src, cv::Mat& dst);
 
 #endif
